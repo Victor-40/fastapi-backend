@@ -39,6 +39,18 @@ class LessonRead(BaseModel):
     title: str
     order: int
 
+class CourseCreate(BaseModel):
+    title: str
+    slug: str
+    level: str
+    price: float = 0
+
+
+def _next_course_id() -> int:
+    return max(COURSES.keys(), default=0) + 1
+
+
+
 @app.get("/courses", response_model=list[CourseRead], tags=["courses"])
 def list_courses(
     level: str | None = None,
@@ -73,5 +85,17 @@ def get_course(course_id: int) -> dict[str, int | float | str]:
     course = COURSES.get(course_id)
     if course is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Course not found")
+
+    return course
+
+@app.post("/courses", response_model=CourseRead, status_code=status.HTTP_201_CREATED, tags=["courses"])
+def create_course(course_in: CourseCreate) -> dict[str, int | float | str]:
+    course_id = _next_course_id()
+    course = {
+        "id": course_id,
+        **course_in.model_dump(),
+    }
+    COURSES[course_id] = course
+    LESSONS[course_id] = []
 
     return course
