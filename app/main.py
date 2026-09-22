@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status
+from pydantic import BaseModel
 
 
 app = FastAPI(
@@ -12,20 +13,65 @@ COURSES = {
     1: {
         "id": 1,
         "title": "FastAPI для начинающих",
+        "slug": "fastapi-for-beginners",
         "level": "beginner",
+        "price": 0.0,
     },
     2: {
         "id": 2,
         "title": "Python Backend Practice",
+        "slug": "python-backend-practice",
         "level": "intermediate",
+        "price": 49.0,
     },
 }
 
+class CourseRead(BaseModel):
+    id: int
+    title: str
+    slug: str
+    level: str
+    price: float
 
-@app.get("/courses/{course_id}", tags=["courses"])
-def get_course(course_id: int) -> dict[str, int | str]:
+class LessonRead(BaseModel):
+    id: int
+    course_id: int
+    title: str
+    order: int
+
+@app.get("/courses", response_model=list[CourseRead], tags=["courses"])
+def list_courses(
+    level: str | None = None,
+    q: str | None = None,
+) -> list[dict[str, int | float | str]]:
+    courses = list(COURSES.values())
+
+    if level is not None:
+        courses = [
+            course
+            for course in courses
+            if str(course["level"]).lower() == level.lower()
+        ]
+
+    if q is not None:
+        query = q.strip().lower()
+        if len(query) < MIN_SEARCH_QUERY_LENGTH:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Search query must contain at least {MIN_SEARCH_QUERY_LENGTH} characters",
+            )
+        courses = [
+            course
+            for course in courses
+            if query in str(course["title"]).lower()
+        ]
+
+    return courses
+
+@app.get("/courses/{course_id}", response_model=CourseRead, tags=["courses"])
+def get_course(course_id: int) -> dict[str, int | float | str]:
     course = COURSES.get(course_id)
     if course is None:
-        raise HTTPException(status_code=404, detail="Course not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Course not found")
 
     return course
