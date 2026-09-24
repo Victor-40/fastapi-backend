@@ -1,10 +1,9 @@
-from typing import Literal
-
 from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel, Field
+
+from app.schemas import CourseCreate, CourseRead, CourseUpdate, LessonRead
+from app.data import COURSES, LESSONS
 
 
-CourseLevel = Literal["beginner", "intermediate", "advanced"]
 MIN_SEARCH_QUERY_LENGTH = 2
 
 
@@ -21,78 +20,6 @@ def health() -> dict[str, str]:
         "status": "ok",
         "service": "CourseHub API",
     }
-
-
-COURSES = {
-    1: {
-        "id": 1,
-        "title": "FastAPI для начинающих",
-        "slug": "fastapi-for-beginners",
-        "level": "beginner",
-        "price": 0.0,
-    },
-    2: {
-        "id": 2,
-        "title": "Python Backend Practice",
-        "slug": "python-backend-practice",
-        "level": "intermediate",
-        "price": 49.0,
-    },
-}
-
-LESSONS = {
-    1: [
-        {
-            "id": 1,
-            "course_id": 1,
-            "title": "Первый запуск FastAPI",
-            "order": 1,
-        },
-        {
-            "id": 2,
-            "course_id": 1,
-            "title": "Path-параметры",
-            "order": 2,
-        },
-    ],
-    2: [
-        {
-            "id": 3,
-            "course_id": 2,
-            "title": "HTTP-ответы backend API",
-            "order": 1,
-        },
-    ],
-}
-
-
-class CourseRead(BaseModel):
-    id: int
-    title: str
-    slug: str
-    level: CourseLevel
-    price: float
-
-
-class LessonRead(BaseModel):
-    id: int
-    course_id: int
-    title: str
-    order: int
-
-
-class CourseCreate(BaseModel):
-    title: str = Field(min_length=3, max_length=80)
-    slug: str = Field(min_length=3, max_length=60, pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-    level: CourseLevel
-    price: float = Field(default=0, ge=0)
-
-
-class CourseUpdate(BaseModel):
-    title: str | None = Field(default=None, min_length=3, max_length=80)
-    slug: str | None = Field(default=None, min_length=3, max_length=60, pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-    level: CourseLevel | None = None
-    price: float | None = Field(default=None, ge=0)
 
 
 @app.get("/courses/{course_id}", response_model=CourseRead, tags=["courses"])
