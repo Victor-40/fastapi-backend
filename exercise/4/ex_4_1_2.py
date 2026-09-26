@@ -3,6 +3,15 @@
 
 name = input().strip()
 
+if name in ["CourseLevel", "CourseRead", "LessonRead", "CourseCreate", "CourseUpdate"]:
+    print("app/schemas.py")
+
+elif name in ["COURSES", "LESSONS"]:
+    print("app/data.py")
+
+else:
+    print("app/main.py")
+
 # Напишите решение
 
 
