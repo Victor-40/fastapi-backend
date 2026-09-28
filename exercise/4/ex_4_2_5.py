@@ -1,5 +1,12 @@
 # procode-task: CH-APIROUTER-TASK-COURSES-PREFIX@1
 
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/courses", tags=["courses"])
+
+@router.get("")
+def list_courses() -> list:
+    return []
 
 # Создайте router и GET /courses
 

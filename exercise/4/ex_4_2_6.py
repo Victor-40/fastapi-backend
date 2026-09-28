@@ -1,6 +1,11 @@
 # procode-task: CH-APIROUTER-TASK-INCLUDE-ROUTERS@1
 
 
+app.include_router(system_router)
+app.include_router(courses_router)
+app.include_router(lessons_router)
+
+
 # Подключите три роутера
 
 

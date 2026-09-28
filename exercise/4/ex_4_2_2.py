@@ -5,6 +5,14 @@ import json
 
 routers = json.loads(input())
 
+result = []
+for route in routers:
+    if route["included"]:
+        for path in route["paths"]:
+            result.append(route["prefix"] + path)
+
+print(json.dumps(result, separators=(",", ":")))
+
 # Напишите решение
 
 
