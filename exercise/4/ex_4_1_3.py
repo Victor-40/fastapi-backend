@@ -5,6 +5,19 @@ import json
 
 files = json.loads(input())
 
+reqs = [
+"app/__init__.py",
+"app/data.py",
+"app/main.py",
+"app/schemas.py"]
+
+result = []
+for path in reqs:
+    if path not in files:
+        result.append(path)
+
+print(json.dumps(result,separators=(",", ":")))
+
 # Напишите решение
 
 
