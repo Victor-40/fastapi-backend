@@ -1,9 +1,13 @@
 # procode-task: CH-SERVICE-LAYER-TASK-FIND-COURSE@1
-
+# from fastapi import HTTPException
+# COURSES = {}
 
 class CourseService:
     def get_course(self, course_id: int) -> CourseRead:
-        pass
+        course = COURSES.get(course_id)
+        if course is None:
+            raise HTTPException(status_code=404, detail="Course not found")
+        return CourseRead(**course)
 
 
 #region УСЛОВИЕ ЗАДАЧИ

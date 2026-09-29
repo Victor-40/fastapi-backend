@@ -1,20 +1,33 @@
-# procode-task: CH-SERVICE-LAYER-TASK-SERVICE-RULES@1
+# procode-task: CH-SERVICE-LAYER-TASK-SERVICE-CALL@1
 
 
-def get_course_service() -> CourseService:
-    pass
+@router.get("/{course_id}", response_model=CourseRead)
+def get_course(
+    course_id: int,
+    service: CourseService = Depends(get_course_service),
+) -> CourseRead:
+    return service.get_course(course_id)
 
 
 #region УСЛОВИЕ ЗАДАЧИ
-# Создайте dependency-провайдер сервиса
+# Получите сервис через Depends
 #
-# Класс CourseService уже подготовлен.
+# router, Depends, CourseService, CourseRead и get_course_service уже подготовлены.
 #
-# Реализуйте функцию get_course_service(), которая создаёт и возвращает новый экземпляр CourseService.
+# Допишите endpoint GET /{course_id}.
 #
-# Функция должна иметь аннотацию возвращаемого типа CourseService.
+# Функция должна иметь сигнатуру:
 #
-# Импорты писать не нужно.
+#
+# def get_course(
+#     course_id: int,
+#     service: CourseService = Depends(get_course_service),
+# ) -> CourseRead:
+#
+#
+# Внутри функции не ищите курс самостоятельно. Передайте course_id в service.get_course(course_id) и верните результат.
+#
+# Важно: в Depends передаётся get_course_service без скобок.
 #
 # Проверка решения:
 # procode имя_файла.py

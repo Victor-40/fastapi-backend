@@ -2,7 +2,7 @@
 
 
 def get_course_service() -> CourseService:
-    pass
+    return CourseService()
 
 
 #region УСЛОВИЕ ЗАДАЧИ

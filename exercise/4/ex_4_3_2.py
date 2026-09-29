@@ -5,9 +5,24 @@ import json
 
 data = json.loads(input())
 
-courses = data["courses"]
-level = data["level"]
-q = data["q"]
+courses: list = data["courses"]
+level: str|None = data["level"]
+q: str|None = data["q"]
+
+result = courses.copy()
+if level is not None:
+    result = [course for course in result if course["level"].lower() == level.lower()]
+
+if q is not None:
+    q = q.strip().lower()
+    if len(q) < 2:
+        print(json.dumps("too_short"))
+    else:
+        result = [course for course in result if q in course["title"].lower()] 
+
+        print(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
+else:
+    print(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
 
 # Напишите решение
 
